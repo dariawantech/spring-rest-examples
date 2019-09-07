@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Spring REST Examples v1 (https://www.dariawan.com)
+    Copyright (C) 2019 Dariawan <hello@dariawan.com>
+
+    Creative Commons Attribution-ShareAlike 4.0 International License
+
+    Under this license, you are free to:
+    # Share - copy and redistribute the material in any medium or format
+    # Adapt - remix, transform, and build upon the material for any purpose,
+      even commercially.
+
+    The licensor cannot revoke these freedoms
+    as long as you follow the license terms.
+
+    License terms:
+    # Attribution - You must give appropriate credit, provide a link to the
+      license, and indicate if changes were made. You may do so in any
+      reasonable manner, but not in any way that suggests the licensor
+      endorses you or your use.
+    # ShareAlike - If you remix, transform, or build upon the material, you must
+      distribute your contributions under the same license as the original.
+    # No additional restrictions - You may not apply legal terms or
+      technological measures that legally restrict others from doing anything the
+      license permits.
+
+    Notices:
+    # You do not have to comply with the license for elements of the material in
+      the public domain or where your use is permitted by an applicable exception
+      or limitation.
+    # No warranties are given. The license may not give you all of
+      the permissions necessary for your intended use. For example, other rights
+      such as publicity, privacy, or moral rights may limit how you use
+      the material.
+
+    You may obtain a copy of the License at
+      https://creativecommons.org/licenses/by-sa/4.0/
+      https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+-->
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            /WEB-INF/spring-security.xml
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>spring.profiles.default</param-name>
+        <param-value>development</param-value>
+    </context-param>
+        
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+    <listener>
+        <listener-class>
+            org.springframework.security.web.session.HttpSessionEventPublisher
+        </listener-class>
+    </listener>
+    
+    
+    <!-- spring security filter -->
+    
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    
+    <filter>
+        <filter-name>httpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    
+    <!-- Reads request input using UTF-8 encoding -->
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- Handles all requests into the application -->
+    <servlet>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                /WEB-INF/springmvc-context.xml
+            </param-value>
+        </init-param>     
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <filter-mapping>
+        <filter-name>httpMethodFilter</filter-name>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+    </filter-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    <welcome-file-list>
+        <welcome-file>swagger-ui.html</welcome-file>
+    </welcome-file-list>
+    
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+</web-app>
