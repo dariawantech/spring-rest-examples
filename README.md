@@ -1,7 +1,7 @@
 Spring REST Examples
 ======================
 
-About Swagger: http://swagger.wordnik.com/
+About Swagger: https://swagger.io/
 
 Swagger UI is a dependency-free collection of HTML, Javascript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API;
 

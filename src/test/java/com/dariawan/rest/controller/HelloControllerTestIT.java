@@ -38,8 +38,8 @@
  */
 package com.dariawan.rest.controller;
 
-import static com.jayway.restassured.RestAssured.with;
-import com.jayway.restassured.authentication.FormAuthConfig;
+import static io.restassured.RestAssured.with;
+import io.restassured.authentication.FormAuthConfig;
 import java.net.InetAddress;
 import static org.hamcrest.Matchers.equalTo;
 import org.junit.Before;
@@ -54,7 +54,8 @@ public class HelloControllerTestIT {
     protected static final String USERNAME = "root";
     protected static final String PASSWORD = "admin";
 
-    protected String login = "http://{serverName}:9699/j_spring_security_check";
+    // protected String login = "http://{serverName}:9699/j_spring_security_check";
+    protected String login = "j_spring_security_check";
     protected String target = "http://{serverName}:9699/dariawan/hello";
     
     @Before
@@ -64,12 +65,12 @@ public class HelloControllerTestIT {
             computerName = "localhost";
         }
         target = target.replace("{serverName}", computerName);
-        login = login.replace("{serverName}", computerName);
     }
     
     @Test
     public void testSayHello() {
         with().header("Accept", "application/json")
+                // .given().urlEncodingEnabled(false)
                 .auth().form(USERNAME, PASSWORD, new FormAuthConfig(login, "j_username", "j_password"))
                 .expect()
                 .statusCode(200)
@@ -80,10 +81,8 @@ public class HelloControllerTestIT {
     @Test
     public void testSayHelloAsString() {
         
-        //System.out.println(with()
-        //    .contentType("application/json").get(target +"/getString").getBody().asString());        
-
         with().header("Accept", "application/json")
+                // .given().urlEncodingEnabled(false)
                 .auth().form(USERNAME, PASSWORD, new FormAuthConfig(login, "j_username", "j_password"))
                 .expect()
                 .statusCode(200)
