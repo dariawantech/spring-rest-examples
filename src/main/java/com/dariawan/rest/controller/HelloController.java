@@ -52,12 +52,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-// @RequestMapping("/")
-@Api(value = "/", description = "apis for Hello")
 public class HelloController {
 
     
-    @RequestMapping(value = "dariawan/hello/getHello", method = RequestMethod.GET,
+    @RequestMapping(value = "/hello/getHello", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Greetings using Swagger, return Hello", notes = "return Hello", response = Hello.class)
     @ResponseStatus(HttpStatus.OK)
@@ -68,7 +66,7 @@ public class HelloController {
         return hello;
     }
     
-    @RequestMapping(value = "dariawan/hello/sayHello/{from}/{message}", method = RequestMethod.GET,
+    @RequestMapping(value = "/hello/sayHello/{from}/{message}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Greetings using Swagger, return Hello", notes = "return Hello", response = Hello.class)
     @ResponseStatus(HttpStatus.OK)
@@ -85,7 +83,7 @@ public class HelloController {
      * 
      * @return greetings
      */
-    @RequestMapping(value = "dariawan/hello/getString", method = RequestMethod.GET)
+    @RequestMapping(value = "/hello/getString", method = RequestMethod.GET)
     @ApiOperation(value = "Greetings using Swagger, return String", notes = "return Hello as String", response = String.class)
     public String sayHelloAsString() {
         return "Greetings from Dariawan!";

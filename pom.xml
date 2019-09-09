@@ -1,3 +1,43 @@
+<!--
+
+    Spring REST Examples v1 (https://www.dariawan.com)
+    Copyright (C) 2019 Dariawan <hello@dariawan.com>
+
+    Creative Commons Attribution-ShareAlike 4.0 International License
+
+    Under this license, you are free to:
+    # Share - copy and redistribute the material in any medium or format
+    # Adapt - remix, transform, and build upon the material for any purpose,
+      even commercially.
+
+    The licensor cannot revoke these freedoms
+    as long as you follow the license terms.
+
+    License terms:
+    # Attribution - You must give appropriate credit, provide a link to the
+      license, and indicate if changes were made. You may do so in any
+      reasonable manner, but not in any way that suggests the licensor
+      endorses you or your use.
+    # ShareAlike - If you remix, transform, or build upon the material, you must
+      distribute your contributions under the same license as the original.
+    # No additional restrictions - You may not apply legal terms or
+      technological measures that legally restrict others from doing anything the
+      license permits.
+
+    Notices:
+    # You do not have to comply with the license for elements of the material in
+      the public domain or where your use is permitted by an applicable exception
+      or limitation.
+    # No warranties are given. The license may not give you all of
+      the permissions necessary for your intended use. For example, other rights
+      such as publicity, privacy, or moral rights may limit how you use
+      the material.
+
+    You may obtain a copy of the License at
+      https://creativecommons.org/licenses/by-sa/4.0/
+      https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -129,10 +169,17 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -253,9 +300,9 @@
             </plugin>
             <plugin>
                 <inherited>false</inherited>
-                <groupId>com.google.code.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.4.0</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
                     <header>NOTICE</header>
                     <failIfMissing>true</failIfMissing>
