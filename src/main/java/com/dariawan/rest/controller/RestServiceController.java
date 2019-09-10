@@ -39,13 +39,18 @@
 package com.dariawan.rest.controller;
 
 import com.dariawan.rest.domain.Book;
+import com.dariawan.rest.exception.BadResourceException;
+import com.dariawan.rest.exception.ResourceAlreadyExistsException;
 import com.dariawan.rest.exception.ResourceNotFoundException;
 import com.dariawan.rest.service.BookService;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,22 +64,34 @@ public class RestServiceController {
 
     @Autowired
     protected BookService bookService;
-    
-    @RequestMapping(path = "/books", method = RequestMethod.GET)
+
+    @RequestMapping(path = "/rest/v1/books", method = RequestMethod.GET)
     public ResponseEntity<List<Book>> findAllBooks() {
-        // read from database
         List<Book> books = bookService.findAll();
         return ResponseEntity.ok(books);  // return 200, with json body
     }
 
-    @RequestMapping(path = "/books/{bookId}", method = RequestMethod.GET)
-    public ResponseEntity<Book> findById(@PathVariable long bookId) {
+    @RequestMapping(path = "/rest/v1/books/{bookId}", method = RequestMethod.GET)
+    public ResponseEntity<Book> findBookById(@PathVariable long bookId) {
         try {
-            // read from database
             Book book = bookService.findById(bookId);
             return ResponseEntity.ok(book);  // return 200, with json body
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // return 404, with null body
+        }
+    }
+
+    @RequestMapping(path = "/rest/v1/books", method = RequestMethod.POST)
+    public ResponseEntity<Void> addBook(@RequestBody Book book) throws URISyntaxException {
+        try {
+            Book newBook = bookService.save(book);
+            return ResponseEntity.created(new URI("/rest/v1/books/" + newBook.getId())).build();
+        } catch (ResourceAlreadyExistsException e) {
+            // log exception first, then return Conflict (409)
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (BadResourceException e) {
+            // log exception first, then return Bad Request (404)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 }

@@ -56,7 +56,7 @@ public class HelloControllerTestIT {
 
     // protected String login = "http://{serverName}:9699/j_spring_security_check";
     protected String login = "j_spring_security_check";
-    protected String target = "http://{serverName}:9699/hello";
+    protected String target = "http://{serverName}:9699/rest/v1/hello";
     
     @Before
     public void changeTarget() throws Exception {

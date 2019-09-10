@@ -39,6 +39,8 @@
 package com.dariawan.rest.service;
 
 import com.dariawan.rest.domain.Book;
+import com.dariawan.rest.exception.BadResourceException;
+import com.dariawan.rest.exception.ResourceAlreadyExistsException;
 import com.dariawan.rest.exception.ResourceNotFoundException;
 import java.util.List;
 
@@ -51,4 +53,6 @@ public interface BookService {
     List<Book> findAll();
     
     Book findById(long id) throws ResourceNotFoundException;
+    
+    Book save(Book book) throws ResourceAlreadyExistsException, BadResourceException;
 }

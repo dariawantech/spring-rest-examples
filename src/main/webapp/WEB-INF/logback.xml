@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Spring REST Examples v1 (https://www.dariawan.com)
+    Copyright (C) 2019 Dariawan <hello@dariawan.com>
+
+    Creative Commons Attribution-ShareAlike 4.0 International License
+
+    Under this license, you are free to:
+    # Share - copy and redistribute the material in any medium or format
+    # Adapt - remix, transform, and build upon the material for any purpose,
+      even commercially.
+
+    The licensor cannot revoke these freedoms
+    as long as you follow the license terms.
+
+    License terms:
+    # Attribution - You must give appropriate credit, provide a link to the
+      license, and indicate if changes were made. You may do so in any
+      reasonable manner, but not in any way that suggests the licensor
+      endorses you or your use.
+    # ShareAlike - If you remix, transform, or build upon the material, you must
+      distribute your contributions under the same license as the original.
+    # No additional restrictions - You may not apply legal terms or
+      technological measures that legally restrict others from doing anything the
+      license permits.
+
+    Notices:
+    # You do not have to comply with the license for elements of the material in
+      the public domain or where your use is permitted by an applicable exception
+      or limitation.
+    # No warranties are given. The license may not give you all of
+      the permissions necessary for your intended use. For example, other rights
+      such as publicity, privacy, or moral rights may limit how you use
+      the material.
+
+    You may obtain a copy of the License at
+      https://creativecommons.org/licenses/by-sa/4.0/
+      https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+-->
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<prudent>true</prudent>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- change file every day -->
+			<fileNamePattern>
+				${catalina.home:-.}/logs/%d{yyyy-MM-dd}/gospel-${spring.profiles.active:-development}.log
+			</fileNamePattern>
+
+			<!-- save file for one year period -->
+			<maxHistory>365</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.dariawan" level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+        <logger name="org.springframework.security" level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</logger>
+        
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
+

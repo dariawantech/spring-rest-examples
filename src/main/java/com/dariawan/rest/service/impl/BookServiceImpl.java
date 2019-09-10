@@ -40,11 +40,16 @@ package com.dariawan.rest.service.impl;
 
 import com.dariawan.rest.domain.Author;
 import com.dariawan.rest.domain.Book;
+import com.dariawan.rest.exception.BadResourceException;
+import com.dariawan.rest.exception.ResourceAlreadyExistsException;
 import com.dariawan.rest.exception.ResourceNotFoundException;
 import com.dariawan.rest.service.BookService;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -54,22 +59,22 @@ import org.springframework.stereotype.Service;
 @Service("bookService")
 public class BookServiceImpl implements BookService{
     
-    private static List<Author> authors;
-    private static List<Book> books;
+    private static ArrayList<Author> authors;
+    private static ArrayList<Book> books;
     
     static {
-        authors = Arrays.asList(new Author(1, "J.R.R. Tolkien", "J.R.R. Tolkien is best known as the author of classic high fantasy works The Hobbit, The Lord of The Rings, and The Silmarillion"),
-                new Author(2, "C.S. Lewis", "C.S. Lewis is best known for his works of fiction especially The Screwtape Letters, The Chronicles of Narnia, and The Space Trilogy, and for his non-fiction Christian apologetics"));
-        books = Arrays.asList(new Book(1, "1827184", null, null, "The Hobbit", authors.get(0)),
-                new Book(2, "1487587", null, null, "The Lord of The Rings", authors.get(0)),
-                new Book(3, "3318634", "0048231398", null, "The Silmarillion", authors.get(0)),
-                new Book(4, "7207376", null, null, "The Lion, the Witch, and The Wardrobe", authors.get(1)),
-                new Book(5, "2812448", null, "9780006716792", "Prince Caspian", authors.get(1)),
-                new Book(6, "2805288", null, "9780006716808", "The Voyage of the Dawn Treader", authors.get(1)),
-                new Book(7, "1304139", null, "9780006716815", "The Silver Chair", authors.get(1)),
-                new Book(8, "2801054", null, "9780006716785", "The Horse and His Boy", authors.get(1)),
-                new Book(9, "2497740", null, "9780006716839", "The Magician's Nephew", authors.get(1)),
-                new Book(10, "752428300", null, "9780006716822", "The Last Battle", authors.get(1)));
+        authors = new ArrayList<>(Arrays.asList(new Author(1, "J.R.R. Tolkien", "J.R.R. Tolkien is best known as the author of classic high fantasy works The Hobbit, The Lord of The Rings, and The Silmarillion"),
+                new Author(2, "C.S. Lewis", "C.S. Lewis is best known for his works of fiction especially The Screwtape Letters, The Chronicles of Narnia, and The Space Trilogy, and for his non-fiction Christian apologetics")));
+        books = new ArrayList<>(Arrays.asList(new Book(1, "1827184", null, null, "The Hobbit"),
+                new Book(2, "1487587", null, null, "The Lord of The Rings"),
+                new Book(3, "3318634", "0048231398", null, "The Silmarillion"),
+                new Book(4, "7207376", null, null, "The Lion, the Witch, and The Wardrobe"),
+                new Book(5, "2812448", null, "9780006716792", "Prince Caspian"),
+                new Book(6, "2805288", null, "9780006716808", "The Voyage of the Dawn Treader"),
+                new Book(7, "1304139", null, "9780006716815", "The Silver Chair"),
+                new Book(8, "2801054", null, "9780006716785", "The Horse and His Boy"),
+                new Book(9, "2497740", null, "9780006716839", "The Magician's Nephew"),
+                new Book(10, "752428300", null, "9780006716822", "The Last Battle")));
     }
 
     @Override
@@ -77,16 +82,53 @@ public class BookServiceImpl implements BookService{
         return books;
     }
 
+    private Book findBookById(long id) {
+        return books.stream()
+                .filter(b -> id == b.getId())
+                .findAny()
+                .orElse(null);
+    }
+    
+    private long findBooksLastId() {
+        Collections.sort(books);         
+        return books.get(books.size() - 1).getId();     
+    }
+    
+    /*
+    private Book findBookByTitle(String title) {
+        return books.stream()
+                .filter(b -> title.equalsIgnoreCase(b.getTitle()))
+                .findAny()
+                .orElse(null);
+    }
+    */
+    
     @Override
     public Book findById(long id) throws ResourceNotFoundException {
         // only for demo, in real scenario: use database
-        Book book = books.stream()
-                .filter(b -> (id == b.getId()))
-                .findAny()
-                .orElse(null);
+        Book book = findBookById(id);
         if (book==null) {
             throw new ResourceNotFoundException("Cannot find book with id: " + id);
         }
         else return book;
+    }
+
+    @Override
+    public Book save(Book book) throws BadResourceException, ResourceAlreadyExistsException {
+        if (book.getId() > 0 && findBookById(book.getId())!=null) { 
+            throw new ResourceAlreadyExistsException("Bookwith with id: " + book.getId() + " already exists");
+        }
+        
+        if (!StringUtils.isEmpty(book.getTitle())) {
+            long newId = findBooksLastId() + 1;
+            book.setId(newId);
+            books.add(book);
+            return book;
+        }
+        else {
+            BadResourceException exc = new BadResourceException("Failedto save book");
+            exc.addErrorMessage("Title is null or empty");
+            throw exc;
+        }
     }
 }

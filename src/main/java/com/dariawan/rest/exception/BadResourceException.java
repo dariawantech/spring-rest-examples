@@ -36,70 +36,37 @@
  *   https://creativecommons.org/licenses/by-sa/4.0/
  *   https://creativecommons.org/licenses/by-sa/4.0/legalcode
  */
-package com.dariawan.rest.domain;
+package com.dariawan.rest.exception;
 
-import java.io.Serializable;
-import lombok.ToString;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author Desson Ariawan
- */
-@ToString
-public class Author implements Serializable {
+public class BadResourceException extends Exception {
 
-    private long id;
-    private String fullName;
-    private String biography;
+    private List<String> errorMessages = new ArrayList<>();
+            
+    public BadResourceException() {
+    }
 
-    public Author() {        
+    public BadResourceException(String msg) {
+        super(msg);
     }
     
-    public Author(long id, String fullName, String biography) {
-        this.id = id;
-        this.fullName = fullName;
-        this.biography = biography;
+    /**
+     * @return the errorMessages
+     */
+    public List<String> getErrorMessages() {
+        return errorMessages;
     }
 
     /**
-     * @return the id
+     * @param errorMessages the errorMessages to set
      */
-    public long getId() {
-        return id;
+    public void setErrorMessages(List<String> errorMessages) {
+        this.errorMessages = errorMessages;
     }
 
-    /**
-     * @param id the id to set
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the fullName
-     */
-    public String getFullName() {
-        return fullName;
-    }
-
-    /**
-     * @param fullName the fullName to set
-     */
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    /**
-     * @return the biography
-     */
-    public String getBiography() {
-        return biography;
-    }
-
-    /**
-     * @param biography the biography to set
-     */
-    public void setBiography(String biography) {
-        this.biography = biography;
+    public void addErrorMessage(String message) {
+        this.errorMessages.add(message);
     }
 }

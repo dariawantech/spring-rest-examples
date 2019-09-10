@@ -46,24 +46,25 @@ import lombok.ToString;
  * @author Desson Ariawan
  */
 @ToString
-public class Book implements Serializable {
+public class Book implements Serializable, Comparable<Book> {
 
     private long id;
     private String oclc;
     private String isbn10;
     private String isbn13;
     private String title;
-    private Author author;
 
-    public Book(long id, String oclc, String isbn10, String isbn13, String title, Author author) {
+    public Book() {        
+    }
+    
+    public Book(long id, String oclc, String isbn10, String isbn13, String title) {
         this.id = id;
         this.isbn10 = oclc;
         this.isbn10 = isbn10;
         this.isbn13 = isbn13;
         this.title = title;
-        this.author = author;
     }
-    
+
     /**
      * @return the id
      */
@@ -134,17 +135,9 @@ public class Book implements Serializable {
         this.title = title;
     }
 
-    /**
-     * @return the author
-     */
-    public Author getAuthor() {
-        return author;
-    }
-
-    /**
-     * @param author the author to set
-     */
-    public void setAuthor(Author author) {
-        this.author = author;
+    @Override
+    public int compareTo(Book book) {
+        return (this.getId() < book.getId() ? -1
+                : (this.getId() == book.getId() ? 0 : 1));
     }
 }

@@ -66,9 +66,32 @@
         <session-management>
             <concurrency-control max-sessions="1"/>
         </session-management>
+        
+        <csrf disabled="true" />
     </http>
     
     <beans:bean id="restAuthenticationEntryPoint" class="com.dariawan.spring.security.RestAuthenticationEntryPoint" />
+    
+    <!--
+    <beans:bean id="csrfMatcher" class="org.springframework.security.web.util.matcher.OrRequestMatcher">
+        <beans:constructor-arg>
+            <util:list value-type="org.springframework.security.web.util.matcher.RequestMatcher">
+                <beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                    <beans:constructor-arg name="pattern" value="/rest/v1/**"/>
+                    <beans:constructor-arg name="httpMethod" value="POST"/>
+                </beans:bean>
+                <beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                    <beans:constructor-arg name="pattern" value="/rest/v1/**"/>
+                    <beans:constructor-arg name="httpMethod" value="PUT"/>
+                </beans:bean>
+                <beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                    <beans:constructor-arg name="pattern" value="/rest/v1/**"/>
+                    <beans:constructor-arg name="httpMethod" value="DELETE"/>
+                </beans:bean>
+            </util:list>
+        </beans:constructor-arg>
+    </beans:bean>
+    -->
     
     <authentication-manager alias="authenticationManager">
         <authentication-provider>
