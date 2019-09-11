@@ -46,10 +46,16 @@ import com.dariawan.rest.service.BookService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -62,35 +68,57 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestServiceController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     protected BookService bookService;
 
-    @RequestMapping(path = "/rest/v1/books", method = RequestMethod.GET)
+    @GetMapping("/rest/v1/books")
     public ResponseEntity<List<Book>> findAllBooks() {
         List<Book> books = bookService.findAll();
         return ResponseEntity.ok(books);  // return 200, with json body
     }
 
-    @RequestMapping(path = "/rest/v1/books/{bookId}", method = RequestMethod.GET)
+    @GetMapping("/rest/v1/books/{bookId}")
     public ResponseEntity<Book> findBookById(@PathVariable long bookId) {
         try {
             Book book = bookService.findById(bookId);
             return ResponseEntity.ok(book);  // return 200, with json body
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // return 404, with null body
         }
     }
 
-    @RequestMapping(path = "/rest/v1/books", method = RequestMethod.POST)
-    public ResponseEntity<Void> addBook(@RequestBody Book book) throws URISyntaxException {
+    @PostMapping("/rest/v1/books")
+    public ResponseEntity<Book> addBook(@RequestBody Book book) throws URISyntaxException {
         try {
             Book newBook = bookService.save(book);
-            return ResponseEntity.created(new URI("/rest/v1/books/" + newBook.getId())).build();
-        } catch (ResourceAlreadyExistsException e) {
+            return ResponseEntity.created(new URI("/rest/v1/books/" + newBook.getId()))
+                    .body(book);
+        } catch (ResourceAlreadyExistsException ex) {
             // log exception first, then return Conflict (409)
+            logger.error(ex.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (BadResourceException e) {
-            // log exception first, then return Bad Request (404)
+        } catch (BadResourceException ex) {
+            // log exception first, then return Bad Request (400)
+            logger.error(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PutMapping("/rest/v1/books/{bookId}")
+    public ResponseEntity<Void> updateBook(@RequestBody Book book, @PathVariable long bookId) {
+        try {
+            book.setId(bookId);
+            bookService.update(book);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException ex) {
+            // log exception first, then return Not Found (404)
+            logger.error(ex.getMessage());
+            return ResponseEntity.notFound().build();
+        } catch (BadResourceException ex) {
+            // log exception first, then return Bad Request (400)
+            logger.error(ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

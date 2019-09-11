@@ -126,7 +126,27 @@ public class BookServiceImpl implements BookService{
             return book;
         }
         else {
-            BadResourceException exc = new BadResourceException("Failedto save book");
+            BadResourceException exc = new BadResourceException("Failed to save book");
+            exc.addErrorMessage("Title is null or empty");
+            throw exc;
+        }
+    }
+    
+    @Override
+    public Book update(Book book) throws ResourceNotFoundException, BadResourceException {
+        Book currBook = findBookById(book.getId());
+        if (currBook==null) { 
+            throw new ResourceNotFoundException("Cannot find book with id: " + book.getId());
+        }
+        else if (!StringUtils.isEmpty(book.getTitle())) {
+            currBook.setOclc(book.getOclc());
+            currBook.setIsbn10(book.getIsbn10());
+            currBook.setIsbn13(book.getIsbn13());
+            currBook.setTitle(book.getTitle());
+            return currBook;
+        }
+        else {
+            BadResourceException exc = new BadResourceException("Failed to save book");
             exc.addErrorMessage("Title is null or empty");
             throw exc;
         }

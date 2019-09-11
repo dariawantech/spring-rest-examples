@@ -55,4 +55,6 @@ public interface BookService {
     Book findById(long id) throws ResourceNotFoundException;
     
     Book save(Book book) throws ResourceAlreadyExistsException, BadResourceException;
+    
+    Book update(Book book) throws ResourceNotFoundException, BadResourceException;
 }
