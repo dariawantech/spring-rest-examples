@@ -57,4 +57,8 @@ public interface BookService {
     Book save(Book book) throws ResourceAlreadyExistsException, BadResourceException;
     
     Book update(Book book) throws ResourceNotFoundException, BadResourceException;
+    
+    Book updateTitle(long bookId, String title) throws ResourceNotFoundException, BadResourceException;
+    
+    boolean deleteById(long id) throws ResourceNotFoundException;
 }

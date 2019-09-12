@@ -114,9 +114,11 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Book save(Book book) throws BadResourceException, ResourceAlreadyExistsException {
+    public Book save(Book book) 
+            throws BadResourceException, ResourceAlreadyExistsException {
         if (book.getId() > 0 && findBookById(book.getId())!=null) { 
-            throw new ResourceAlreadyExistsException("Bookwith with id: " + book.getId() + " already exists");
+            throw new ResourceAlreadyExistsException("Bookwith with id: " + book.getId() +
+                    " already exists");
         }
         
         if (!StringUtils.isEmpty(book.getTitle())) {
@@ -133,7 +135,8 @@ public class BookServiceImpl implements BookService{
     }
     
     @Override
-    public Book update(Book book) throws ResourceNotFoundException, BadResourceException {
+    public Book update(Book book) 
+            throws ResourceNotFoundException, BadResourceException {
         Book currBook = findBookById(book.getId());
         if (currBook==null) { 
             throw new ResourceNotFoundException("Cannot find book with id: " + book.getId());
@@ -149,6 +152,36 @@ public class BookServiceImpl implements BookService{
             BadResourceException exc = new BadResourceException("Failed to save book");
             exc.addErrorMessage("Title is null or empty");
             throw exc;
+        }
+    }
+    
+    @Override
+    public Book updateTitle(long bookId, String title) 
+            throws ResourceNotFoundException, BadResourceException {
+        Book currBook = findBookById(bookId);
+        if (currBook==null) { 
+            throw new ResourceNotFoundException("Cannot find book with id: " + bookId);
+        }
+        else if (!StringUtils.isEmpty(title)) {
+            currBook.setTitle(title);
+            return currBook;
+        }
+        else {
+            BadResourceException exc = new BadResourceException("Failed to save book's title");
+            exc.addErrorMessage("Title is null or empty");
+            throw exc;
+        }
+    }
+    
+    @Override
+    public boolean deleteById(long bookId) throws ResourceNotFoundException {
+        Book book = findBookById(bookId);
+        if (book==null) { 
+            throw new ResourceNotFoundException("Cannot find book with id: " + bookId);
+        }
+        else {
+            books.remove(book);
+            return true;
         }
     }
 }

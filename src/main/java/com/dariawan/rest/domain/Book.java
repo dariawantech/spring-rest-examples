@@ -59,7 +59,7 @@ public class Book implements Serializable, Comparable<Book> {
     
     public Book(long id, String oclc, String isbn10, String isbn13, String title) {
         this.id = id;
-        this.isbn10 = oclc;
+        this.oclc = oclc;
         this.isbn10 = isbn10;
         this.isbn13 = isbn13;
         this.title = title;

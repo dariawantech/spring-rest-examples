@@ -46,19 +46,18 @@ import com.dariawan.rest.service.BookService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -111,7 +110,7 @@ public class RestServiceController {
         try {
             book.setId(bookId);
             bookService.update(book);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } catch (ResourceNotFoundException ex) {
             // log exception first, then return Not Found (404)
             logger.error(ex.getMessage());
@@ -120,6 +119,33 @@ public class RestServiceController {
             // log exception first, then return Bad Request (400)
             logger.error(ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    
+    @PatchMapping("/rest/v1/books/{bookId}")
+    public ResponseEntity<Void> updateBookTitle(@RequestBody String title, @PathVariable long bookId) {
+        try {
+            bookService.updateTitle(bookId, title);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException ex) {
+            // log exception first, then return Not Found (404)
+            logger.error(ex.getMessage());
+            return ResponseEntity.notFound().build();
+        } catch (BadResourceException ex) {
+            // log exception first, then return Bad Request (400)
+            logger.error(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    
+    @DeleteMapping(path="/rest/v1/books/{bookId}")
+    public ResponseEntity<Void> deleteBookById(@PathVariable long bookId) {
+        try {
+            bookService.deleteById(bookId);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException ex) {
+            logger.error(ex.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 }
