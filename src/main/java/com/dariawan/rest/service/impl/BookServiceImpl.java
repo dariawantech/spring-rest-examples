@@ -117,7 +117,7 @@ public class BookServiceImpl implements BookService{
     public Book save(Book book) 
             throws BadResourceException, ResourceAlreadyExistsException {
         if (book.getId() > 0 && findBookById(book.getId())!=null) { 
-            throw new ResourceAlreadyExistsException("Bookwith with id: " + book.getId() +
+            throw new ResourceAlreadyExistsException("Book with id: " + book.getId() +
                     " already exists");
         }
         
